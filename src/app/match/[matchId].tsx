@@ -3,12 +3,23 @@ import { ScrollView, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams } from 'expo-router';
 
+import { BadgeList } from '@/components/BadgeList';
 import { TeamScoreboard } from '@/components/Scoreboard';
 import { Card } from '@/components/ui/Card';
 import { Text } from '@/components/ui/Text';
 import { ErrorView, Loading } from '@/components/ui/States';
+import { isRetryable } from '@/api/client';
 import { useMatch } from '@/hooks/riot';
-import { formatDuration, formatKda, queueName, timeAgo } from '@/lib/lol';
+import { useChampionName } from '@/hooks/useStaticData';
+import { computeMatchBadges } from '@/lib/badges';
+import {
+  formatDuration,
+  formatKda,
+  isRemake,
+  outcomeLabel,
+  queueName,
+  timeAgo,
+} from '@/lib/lol';
 import { colors, outcomeColors, spacing } from '@/theme';
 
 export default function MatchScreen() {
@@ -16,6 +27,7 @@ export default function MatchScreen() {
   const { data, isLoading, isError, error, refetch } = useMatch(matchId);
 
   const now = useMemo(() => Date.now(), []);
+  const championName = useChampionName();
 
   if (isLoading) {
     return (
@@ -28,7 +40,10 @@ export default function MatchScreen() {
   if (isError || !data) {
     return (
       <SafeAreaView style={styles.safe} edges={['bottom']}>
-        <ErrorView message={error?.message ?? '매치를 불러오지 못했습니다.'} onRetry={() => refetch()} />
+        <ErrorView
+          message={error?.message ?? '매치를 불러오지 못했습니다.'}
+          onRetry={isRetryable(error) ? () => refetch() : undefined}
+        />
       </SafeAreaView>
     );
   }
@@ -39,13 +54,18 @@ export default function MatchScreen() {
     1,
   );
 
-  const blue = data.info.participants.filter((p) => p.teamId === 100);
-  const red = data.info.participants.filter((p) => p.teamId === 200);
-  const blueTeam = data.info.teams.find((t) => t.teamId === 100);
-  const redTeam = data.info.teams.find((t) => t.teamId === 200);
-  const remake = data.info.gameDuration < 300;
+  const remake = isRemake(data.info.gameDuration);
+  const badges = computeMatchBadges(data);
+  const myBadges = me ? badges[me.puuid] ?? [] : [];
 
-  const oc = me ? outcomeColors(me.win) : null;
+  // 내 팀을 먼저 보여준다 (기준 플레이어가 없으면 블루 → 레드)
+  const sides = [
+    { teamId: 100, label: '블루팀' },
+    { teamId: 200, label: '레드팀' },
+  ];
+  if (me?.teamId === 200) sides.reverse();
+
+  const oc = me ? outcomeColors(me.win, remake) : null;
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
@@ -55,7 +75,7 @@ export default function MatchScreen() {
             <Text variant="title">{queueName(data.info.queueId)}</Text>
             {me && oc ? (
               <Text variant="title" style={{ color: oc.main }}>
-                {remake ? '다시하기' : me.win ? '승리' : '패배'}
+                {outcomeLabel(me.win, remake)}
               </Text>
             ) : null}
           </View>
@@ -64,31 +84,38 @@ export default function MatchScreen() {
           </Text>
           {me ? (
             <Text variant="caption" color="textSecondary" tabular style={{ marginTop: spacing.xs }}>
-              {me.championName} · {me.kills}/{me.deaths}/{me.assists} (
+              {championName(me.championId, me.championName)} · {me.kills}/{me.deaths}/{me.assists} (
               {formatKda(me.kills, me.deaths, me.assists)})
             </Text>
           ) : null}
+          {remake ? (
+            <Text variant="caption" color="textMuted">
+              5분 미만 다시하기 게임은 통계에 포함되지 않습니다.
+            </Text>
+          ) : null}
+          {myBadges.length > 0 ? (
+            <View style={{ marginTop: spacing.sm }}>
+              <BadgeList badges={myBadges} />
+            </View>
+          ) : null}
         </Card>
 
-        {blueTeam ? (
-          <TeamScoreboard
-            team={blueTeam}
-            participants={blue}
-            mePuuid={puuid ?? ''}
-            maxDamage={maxDamage}
-            sideLabel="블루팀"
-          />
-        ) : null}
-
-        {redTeam ? (
-          <TeamScoreboard
-            team={redTeam}
-            participants={red}
-            mePuuid={puuid ?? ''}
-            maxDamage={maxDamage}
-            sideLabel="레드팀"
-          />
-        ) : null}
+        {sides.map(({ teamId, label }) => {
+          const team = data.info.teams.find((t) => t.teamId === teamId);
+          if (!team) return null;
+          return (
+            <TeamScoreboard
+              key={teamId}
+              team={team}
+              participants={data.info.participants.filter((p) => p.teamId === teamId)}
+              mePuuid={puuid ?? ''}
+              maxDamage={maxDamage}
+              sideLabel={label}
+              badges={badges}
+              remake={remake}
+            />
+          );
+        })}
       </ScrollView>
     </SafeAreaView>
   );

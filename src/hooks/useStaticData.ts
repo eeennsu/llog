@@ -11,3 +11,13 @@ export function useStaticData() {
     gcTime: Infinity,
   });
 }
+
+/**
+ * championId(숫자 key) → 한국어 챔피언 이름.
+ * 정적 데이터 로드 전이거나 신규 챔피언이라 맵에 없으면 match-v5 의 championName(영문 id)으로 대체한다.
+ */
+export function useChampionName() {
+  const { data } = useStaticData();
+  return (championId: number, fallback: string) =>
+    data?.champions[String(championId)]?.name ?? fallback;
+}

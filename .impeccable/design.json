@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-19T00:00:00Z",
+  "title": "Design System: LLog",
+  "extensions": {
+    "colorMeta": {
+      "signal-cyan": { "role": "primary", "displayName": "Signal Cyan", "canonical": "#22D3EE", "tonalRamp": ["#04181C", "#0A3D47", "#106673", "#1AA9BF", "#22D3EE", "#5FE0F3", "#9CECF7", "#D6F8FC"] },
+      "signal-cyan-dim": { "role": "primary", "displayName": "Signal Cyan Dim", "canonical": "#1AA9BF" },
+      "on-signal-cyan": { "role": "primary", "displayName": "On Signal Cyan", "canonical": "#04181C" },
+      "win-blue": { "role": "secondary", "displayName": "Win Blue", "canonical": "#3D7DE0", "tonalRamp": ["#0A1A33", "#12305C", "#1D4A8C", "#2C63B8", "#3D7DE0", "#6E9DE8", "#A3C1F0", "#D8E5F9"] },
+      "loss-red": { "role": "secondary", "displayName": "Loss Red", "canonical": "#E0555B", "tonalRamp": ["#330C0E", "#5C1619", "#8C2429", "#B8363C", "#E0555B", "#E88287", "#F0B0B3", "#F9DCDD"] },
+      "ledger-black": { "role": "neutral", "displayName": "Ledger Black", "canonical": "#0E0F12", "tonalRamp": ["#0B0C0F", "#0E0F12", "#16181D", "#1C1F26", "#22262E", "#30343D", "#858B94", "#E8EAED"] },
+      "sunken-well": { "role": "neutral", "displayName": "Sunken Well", "canonical": "#0B0C0F" },
+      "slate-surface": { "role": "neutral", "displayName": "Slate Surface", "canonical": "#16181D" },
+      "raised-slate": { "role": "neutral", "displayName": "Raised Slate", "canonical": "#1C1F26" },
+      "press-slate": { "role": "neutral", "displayName": "Press Slate", "canonical": "#22262E" },
+      "hairline": { "role": "neutral", "displayName": "Hairline", "canonical": "#24272E" },
+      "hairline-strong": { "role": "neutral", "displayName": "Hairline Strong", "canonical": "#30343D" },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#E8EAED" },
+      "ink-secondary": { "role": "neutral", "displayName": "Ink Secondary", "canonical": "#A0A6AE" },
+      "ink-muted": { "role": "neutral", "displayName": "Ink Muted", "canonical": "#858B94" },
+      "ink-disabled": { "role": "neutral", "displayName": "Ink Disabled", "canonical": "#4A4F57" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "화면 최상위 한 줄. 드물게." },
+      "headline": { "displayName": "Headline (h1)", "purpose": "소환사 이름." },
+      "headline-small": { "displayName": "Headline Small (h2)", "purpose": "섹션 제목." },
+      "title": { "displayName": "Title", "purpose": "카드 제목, 티어명, 검색 입력 텍스트." },
+      "body": { "displayName": "Body", "purpose": "본문." },
+      "body-strong": { "displayName": "Body Strong", "purpose": "KDA, 승패, 버튼 라벨." },
+      "label": { "displayName": "Label (caption)", "purpose": "큐·시간·CS·LP 메타, 필터 칩." },
+      "label-small": { "displayName": "Label Small (micro)", "purpose": "매치 뱃지." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "image-fade", "value": "100ms", "purpose": "Sprite/챔피언 이미지 로드 시 expo-image transition." },
+      { "name": "press-dim", "value": "opacity 0.85", "purpose": "매치 행 눌림 피드백." }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Retry Button",
+      "kind": "button",
+      "refersTo": "button-retry",
+      "description": "에러 뷰의 유일한 텍스트 버튼. 시안 틴트.",
+      "html": "<button class=\"ds-btn-retry\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"23 4 23 10 17 10\"/><path d=\"M20.49 15a9 9 0 1 1-2.12-9.36L23 10\"/></svg>다시 시도</button>",
+      "css": ".ds-btn-retry { display: inline-flex; align-items: center; gap: 4px; padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(34,211,238,0.35); background: rgba(34,211,238,0.10); color: #22D3EE; font: 600 14px/20px Roboto, system-ui, sans-serif; cursor: pointer; } .ds-btn-retry:hover, .ds-btn-retry:active { background: #22262E; } .ds-btn-retry:focus-visible { outline: 2px solid #22D3EE; outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Bar",
+      "kind": "input",
+      "refersTo": "search-input",
+      "description": "Riot ID 검색 입력. 포커스 시 시안 보더·아이콘.",
+      "html": "<label class=\"ds-search\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/></svg><input placeholder=\"소환사명 #태그\"/></label>",
+      "css": ".ds-search { display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid #24272E; background: #0B0C0F; color: #858B94; } .ds-search:focus-within { border-color: rgba(34,211,238,0.35); color: #22D3EE; } .ds-search input { flex: 1; background: transparent; border: 0; outline: 0; color: #E8EAED; font: 400 16px/22px Roboto, system-ui, sans-serif; caret-color: #22D3EE; } .ds-search input::placeholder { color: #858B94; }"
+    },
+    {
+      "name": "Queue Filter Chips",
+      "kind": "chip",
+      "refersTo": "chip-filter",
+      "description": "큐 카테고리 필터. 선택 칩만 시안.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip ds-chip-on\">전체</button><button class=\"ds-chip\">솔로랭크</button><button class=\"ds-chip\">자유랭크</button><button class=\"ds-chip\">칼바람</button></div>",
+      "css": ".ds-chips { display: flex; gap: 8px; } .ds-chip { padding: 4px 12px; border-radius: 999px; border: 1px solid #24272E; background: transparent; color: #A0A6AE; font: 500 12px/16px Roboto, system-ui, sans-serif; cursor: pointer; } .ds-chip:hover { background: #22262E; } .ds-chip:focus-visible { outline: 2px solid #22D3EE; outline-offset: 2px; } .ds-chip-on { background: rgba(34,211,238,0.10); border-color: rgba(34,211,238,0.35); color: #22D3EE; }"
+    },
+    {
+      "name": "Segmented Toggle",
+      "kind": "nav",
+      "refersTo": "segmented-toggle",
+      "description": "균등 분할 세그먼트. 선택면만 시안 틴트.",
+      "html": "<div class=\"ds-seg\"><button class=\"ds-seg-item ds-seg-on\">매치</button><button class=\"ds-seg-item\">챔피언</button></div>",
+      "css": ".ds-seg { display: flex; gap: 2px; padding: 2px; border-radius: 8px; border: 1px solid #24272E; background: #16181D; width: 280px; } .ds-seg-item { flex: 1; padding: 8px 0; border: 0; border-radius: 6px; background: transparent; color: #A0A6AE; font: 600 14px/20px Roboto, system-ui, sans-serif; cursor: pointer; } .ds-seg-item:hover { background: #22262E; } .ds-seg-item:focus-visible { outline: 2px solid #22D3EE; } .ds-seg-on, .ds-seg-on:hover { background: rgba(34,211,238,0.10); color: #22D3EE; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "hairline 보더 + 표면 단차, 섀도 없음.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-label\">솔로랭크</div><div class=\"ds-card-title\">에메랄드 II</div><div class=\"ds-card-meta\">64 LP</div></div>",
+      "css": ".ds-card { position: relative; overflow: hidden; padding: 16px; border-radius: 12px; border: 1px solid #24272E; background: #16181D; width: 160px; font-family: Roboto, system-ui, sans-serif; } .ds-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #1fa856; } .ds-card-label { color: #858B94; font: 500 12px/16px inherit; } .ds-card-title { margin-top: 4px; color: #1fa856; font-weight: 600; font-size: 16px; line-height: 22px; } .ds-card-meta { margin-top: 2px; color: #A0A6AE; font-size: 12px; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Match Row",
+      "kind": "custom",
+      "refersTo": "match-row-win",
+      "description": "시그니처. 결과 틴트 + 좌측 3px 액센트 바 + 뱃지 줄.",
+      "html": "<div class=\"ds-match ds-match-win\"><div class=\"ds-match-main\"><div class=\"ds-match-icon\"></div><div class=\"ds-match-center\"><div class=\"ds-match-meta\">솔로랭크 · 2시간 전</div><div class=\"ds-match-kda\">12 / <span class=\"ds-loss\">3</span> / 8</div><div class=\"ds-match-sub\">6.67 KDA</div></div><div class=\"ds-match-right\"><div class=\"ds-match-result\">승리</div><div class=\"ds-match-meta\">28:14</div></div></div><div class=\"ds-badges\"><span class=\"ds-badge ds-badge-hi\">MVP</span><span class=\"ds-badge\">솔킬왕</span></div></div>",
+      "css": ".ds-match { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 12px; padding: 12px 12px 12px 16px; border-radius: 12px; border: 1px solid rgba(61,125,224,0.40); background: rgba(61,125,224,0.10); width: 340px; font-family: Roboto, system-ui, sans-serif; } .ds-match::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #3D7DE0; } .ds-match:active { opacity: 0.85; } .ds-match-main { display: flex; align-items: center; gap: 12px; } .ds-match-icon { width: 44px; height: 44px; border-radius: 6px; background: #1C1F26; border: 1px solid #24272E; } .ds-match-center { flex: 1; } .ds-match-meta { color: #858B94; font-size: 12px; line-height: 16px; font-weight: 500; font-variant-numeric: tabular-nums; } .ds-match-kda { margin-top: 2px; color: #E8EAED; font-size: 14px; line-height: 20px; font-weight: 600; font-variant-numeric: tabular-nums; } .ds-loss { color: #E0555B; } .ds-match-sub { color: #A0A6AE; font-size: 12px; line-height: 16px; } .ds-match-right { text-align: right; } .ds-match-result { color: #3D7DE0; font-size: 14px; line-height: 20px; font-weight: 600; } .ds-badges { display: flex; flex-wrap: wrap; gap: 4px; } .ds-badge { padding: 2px 8px; border-radius: 6px; border: 1px solid #30343D; background: #1C1F26; color: #A0A6AE; font-size: 11px; line-height: 14px; font-weight: 500; } .ds-badge-hi { border-color: rgba(34,211,238,0.35); background: rgba(34,211,238,0.10); color: #22D3EE; }"
+    },
+    {
+      "name": "Match Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "매치 해석 태그. highlight만 시안.",
+      "html": "<div class=\"ds-badges\"><span class=\"ds-badge ds-badge-hi\">펜타킬</span><span class=\"ds-badge\">철거반</span><span class=\"ds-badge\">솔킬왕</span></div>",
+      "css": ".ds-badges { display: flex; gap: 4px; } .ds-badge { padding: 2px 8px; border-radius: 6px; border: 1px solid #30343D; background: #1C1F26; color: #A0A6AE; font: 500 11px/14px Roboto, system-ui, sans-serif; } .ds-badge-hi { border-color: rgba(34,211,238,0.35); background: rgba(34,211,238,0.10); color: #22D3EE; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Post-Game Ledger",
+    "overview": "LLog는 게임이 끝난 직후, 혹은 로딩 화면의 수십 초 동안 펼쳐보는 장부다. 거의 검은 중립 그레이 위에 숫자가 고정폭으로 정렬되고, 영역은 선 하나와 아주 얕은 표면 단차로만 나뉜다. 장식은 없다. 장부가 말을 거는 곳은 두 군데뿐이다: 승/패를 알리는 블루·레드, 그리고 \"이 게임에서 무슨 일이 있었나\"를 짚는 Signal Cyan.\n\n밀도는 중간 이상이다. 한 매치 행에 챔피언·스펠·룬·KDA·결과·아이템·CS·뱃지가 모두 들어가지만, 텍스트 위계(ink → secondary → muted)와 8pt 간격으로 정돈되어 한 손 스크롤 중에도 읽힌다. 깊이는 그림자가 아니라 표면의 밝기 단계로 표현한다.\n\n확정된 거부 대상: 과한 그라데이션, 네온 글로우, 드롭섀도 남발, 이모지, 고채도 남용, 두 번째 강조색.",
+    "keyCharacteristics": [
+      "다크 전용. 라이트 테마는 존재하지 않는다.",
+      "강조색은 Signal Cyan 하나. 승/패 블루·레드는 결과 표시 전용 시맨틱.",
+      "1px hairline 보더 + 5단계 표면 단차로 영역을 가른다. 섀도 없음.",
+      "모든 수치는 tabular-nums로 정렬.",
+      "시스템 폰트(Android는 Roboto), 8단계 고정 타입 스케일."
+    ],
+    "rules": [
+      { "name": "The One Signal Rule", "body": "강조색은 Signal Cyan 하나뿐이다. 한 화면에서 시안이 켜진 요소는 \"지금 선택된 것\" 또는 \"이 게임의 핵심\"이어야 하며, 장식으로 켜지는 시안은 없다.", "section": "colors" },
+      { "name": "The Outcome-Only Rule", "body": "블루와 레드는 승/패(와 에러)를 말할 때만 쓴다. 차트·링크·일반 강조에 빌려 쓰지 않는다.", "section": "colors" },
+      { "name": "The Tint-Not-Fill Rule", "body": "색이 면을 차지할 때는 10% 틴트 표면 + 35~40% 보더로만 쓴다. 채도 100% 면은 3px 액센트 바가 최대다.", "section": "colors" },
+      { "name": "The Tabular Ledger Rule", "body": "행마다 비교되는 숫자(KDA, 승률, LP, CS, 게임 시간)는 반드시 `tabular`로 렌더한다.", "section": "typography" },
+      { "name": "The Eight Steps Rule", "body": "타입은 `typography` 토큰 8단계에서만 고른다. 화면별로 fontSize를 새로 만들지 않는다.", "section": "typography" },
+      { "name": "The Flat Ledger Rule", "body": "드롭섀도·elevation·글로우는 없다. 한 단 올리고 싶으면 `raised-slate`로, 눌림은 `press-slate` 또는 opacity 0.85로 표현한다.", "section": "elevation" }
+    ],
+    "dos": [
+      "**Do** 모든 색·간격·타이포·라운드를 `src/theme` 토큰에서 가져온다.",
+      "**Do** 새 UI는 `src/components/ui/`의 `Text`, `Card`, `Pill`, `Sprite`, `States`부터 조립한다.",
+      "**Do** 시안은 선택·포커스·핵심 해석(하이라이트 뱃지)에만 켠다.",
+      "**Do** 색 면은 10% 틴트 + 35~40% 보더 조합으로 쓴다.",
+      "**Do** 비교되는 숫자에 `tabular`를 켠다.",
+      "**Do** 로딩·에러·빈 상태를 `States` 프리미티브로 모든 데이터 화면에 둔다. 로딩과 실패를 \"없음\"으로 뭉개지 않는다.",
+      "**Do** 모든 Pressable에 `accessibilityRole`과 한국어 `accessibilityLabel`을 단다. 선택형 컨트롤은 `accessibilityState={{ selected }}`.",
+      "**Do** 터치 영역은 48dp 이상. Pressable을 Pressable 안에 중첩하지 않는다."
+    ],
+    "donts": [
+      "**Don't** 두 번째 강조색을 들이지 않는다. 티어색도 랭크 표시 밖으로 꺼내지 않는다.",
+      "**Don't** 드롭섀도·elevation·네온 글로우·그라데이션을 쓰지 않는다.",
+      "**Don't** 블루·레드를 승/패·에러 이외의 의미로 쓰지 않는다.",
+      "**Don't** 이모지를 UI에 쓰지 않는다. 아이콘은 Feather.",
+      "**Don't** 컴포넌트 안에 hex 값을 하드코딩하지 않는다.",
+      "**Don't** Riot 로고나 공식 브랜딩을 차용하지 않는다."
+    ]
+  }
+}

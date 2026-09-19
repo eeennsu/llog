@@ -2,12 +2,14 @@ import { View, StyleSheet } from 'react-native';
 
 import { ChampionIcon } from '@/components/ChampionIcon';
 import { Text } from '@/components/ui/Text';
+import { useChampionName } from '@/hooks/useStaticData';
 import { formatKda } from '@/lib/lol';
 import { ChampionStat } from '@/lib/stats';
 import { colors, radii, spacing } from '@/theme';
 
 /** 챔피언 1행: 아이콘 + 이름/게임수 + 우측 승률/KDA/CS + 얇은 승패 미니 바 */
 export function ChampionStatRow({ stat }: { stat: ChampionStat }) {
+  const championName = useChampionName();
   const winFlex = stat.games > 0 ? stat.wins / stat.games : 0;
 
   return (
@@ -16,7 +18,7 @@ export function ChampionStatRow({ stat }: { stat: ChampionStat }) {
 
       <View style={styles.center}>
         <Text variant="bodyStrong" numberOfLines={1}>
-          {stat.championName}
+          {championName(stat.championId, stat.championName)}
         </Text>
         <Text variant="caption" color="textMuted" tabular>
           {stat.games}경기

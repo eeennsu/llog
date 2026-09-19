@@ -32,6 +32,7 @@ export function matchInCategory(queueId: number, key: QueueCategoryKey): boolean
 }
 
 export type ChampionStat = {
+  championId: number;
   championName: string;
   games: number;
   wins: number;
@@ -61,6 +62,7 @@ export function aggregateChampionStats(matches: MatchDto[], puuid: string): Cham
     let stat = acc.get(me.championName);
     if (!stat) {
       stat = {
+        championId: me.championId,
         championName: me.championName,
         games: 0,
         wins: 0,

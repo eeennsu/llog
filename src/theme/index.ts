@@ -25,7 +25,7 @@ export const colors = {
   // 텍스트 위계
   text: '#E8EAED',
   textSecondary: '#A0A6AE',
-  textMuted: '#6C727B',
+  textMuted: '#858B94', // 배경·카드 위 4.5:1 이상 (12px 메타 텍스트 가독성)
   textDisabled: '#4A4F57',
   onPrimary: '#04181C', // 시안 위 텍스트
 
@@ -89,8 +89,14 @@ export const typography = {
 
 export type TypographyVariant = keyof typeof typography;
 
-/** 승/패에 따른 시맨틱 색 묶음 */
-export function outcomeColors(win: boolean) {
+/** 터치 영역 최소 크기 (Material 48dp) */
+export const touchTarget = 48;
+
+/** 승/패에 따른 시맨틱 색 묶음. 다시하기(remake)는 승패가 아니므로 중립 */
+export function outcomeColors(win: boolean, remake = false) {
+  if (remake) {
+    return { main: colors.textSecondary, surface: colors.surface, border: colors.border };
+  }
   return win
     ? { main: colors.win, surface: colors.winSurface, border: colors.winBorder }
     : { main: colors.loss, surface: colors.lossSurface, border: colors.lossBorder };

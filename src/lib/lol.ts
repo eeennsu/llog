@@ -107,6 +107,15 @@ export function tierLabel(tier: string): string {
   return TIER_LABELS[tier?.toUpperCase()] ?? tier;
 }
 
+/** 마스터 이상은 단계(I~IV)가 없으므로 티어명만 쓴다 */
+const APEX_TIERS = new Set(['MASTER', 'GRANDMASTER', 'CHALLENGER']);
+
+/** 티어 + 단계 표기 (예: '골드 II', '챌린저') */
+export function tierRankLabel(tier: string, rank: string): string {
+  const label = tierLabel(tier);
+  return APEX_TIERS.has(tier?.toUpperCase()) ? label : `${label} ${rank}`;
+}
+
 /** 티어 대표 색상 */
 export function tierColor(tier: string): string {
   switch (tier?.toUpperCase()) {
@@ -152,6 +161,16 @@ export function winRate(wins: number, losses: number): number {
   const total = wins + losses;
   if (total === 0) return 0;
   return Math.round((wins / total) * 100);
+}
+
+/** 다시하기(remake) 기준: 게임 시간 5분 미만 */
+export function isRemake(gameDurationSec: number): boolean {
+  return gameDurationSec < 300;
+}
+
+/** 게임 결과 라벨 */
+export function outcomeLabel(win: boolean, remake: boolean): string {
+  return remake ? '다시하기' : win ? '승리' : '패배';
 }
 
 /** Riot ID 파싱: "이름#태그" → { gameName, tagLine }. 태그 없으면 KR 기본 'KR1' 미적용, null 반환 */

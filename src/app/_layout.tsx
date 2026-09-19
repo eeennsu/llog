@@ -40,7 +40,8 @@ export default function RootLayout() {
                 contentStyle: { backgroundColor: colors.bg },
               }}
             >
-              <Stack.Screen name="index" options={{ title: 'LLog' }} />
+              {/* 홈은 자체 워드마크를 가지므로 헤더를 숨긴다 (브랜드 중복·상단 여백 이중 방지) */}
+              <Stack.Screen name="index" options={{ title: 'LLog', headerShown: false }} />
               <Stack.Screen name="summoner/[riotId]" options={{ title: '' }} />
               <Stack.Screen name="match/[matchId]" options={{ title: '매치 상세' }} />
             </Stack>

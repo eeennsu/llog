@@ -9,7 +9,8 @@ Riot API 키를 은닉하기 위한 패스스루 프록시입니다. 앱은 이 
 cd server
 npm install
 cp .env.example .env.local   # .env.local 에 RIOT_API_KEY 입력
-npm run dev                  # http://localhost:3000 에서 구동
+npm run dev:local            # http://localhost:3000 — Vercel 로그인 없이 Node http 로 핸들러 직접 서빙 (dev.ts)
+npm run dev                  # 동일 포트, vercel dev 사용 (vercel login + 프로젝트 링크 필요)
 ```
 
 앱 쪽에서는 루트 `.env` 의 `EXPO_PUBLIC_API_BASE=http://localhost:3000` 로 이 프록시를 가리킵니다.
@@ -21,7 +22,7 @@ GET /api/riot/<hostKey>/<riot path...>?<query>
 ```
 
 - `hostKey`: platform(`kr`,`na1`…) 또는 regional(`asia`,`americas`,`europe`,`sea`)
-- 예: `/api/riot/asia/riot/account/v1/accounts/by-riot-id/Hide on bush/KR1`
+- 예: `/api/riot/asia/riot/account/v1/accounts/by-riot-id/{nickname}/KR1`
 
 ## 배포 (선택)
 

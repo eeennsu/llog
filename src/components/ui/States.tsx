@@ -2,11 +2,11 @@ import { Feather } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable, View, StyleSheet } from 'react-native';
 
 import { Text } from '@/components/ui/Text';
-import { colors, radii, spacing } from '@/theme';
+import { colors, radii, spacing, touchTarget } from '@/theme';
 
 export function Loading({ label }: { label?: string }) {
   return (
-    <View style={styles.center}>
+    <View style={styles.center} accessible accessibilityLabel={label ?? '불러오는 중'}>
       <ActivityIndicator color={colors.primary} />
       {label ? (
         <Text variant="caption" color="textMuted" style={{ marginTop: spacing.md }}>
@@ -38,6 +38,8 @@ export function ErrorView({
       {onRetry ? (
         <Pressable
           onPress={onRetry}
+          accessibilityRole="button"
+          accessibilityLabel="다시 시도"
           style={({ pressed }) => [styles.retry, pressed && { backgroundColor: colors.hover }]}
         >
           <Feather name="rotate-cw" size={14} color={colors.primary} />
@@ -92,8 +94,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.xs,
     marginTop: spacing.lg,
+    minHeight: touchTarget,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
     borderRadius: radii.md,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.primaryBorder,

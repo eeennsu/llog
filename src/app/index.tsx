@@ -1,34 +1,64 @@
-import { useState } from 'react';
-import { ScrollView, View, StyleSheet } from 'react-native';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SearchBar } from '@/components/SearchBar';
 import { SummonerRow } from '@/components/SummonerRow';
 import { EmptyState } from '@/components/ui/States';
 import { Text } from '@/components/ui/Text';
-import { goToSummoner } from '@/lib/nav';
 import { parseRiotId } from '@/lib/lol';
-import { summonerKey, useAppStore } from '@/store/useAppStore';
-import { colors, spacing } from '@/theme';
+import { goToSummoner } from '@/lib/nav';
+import { SummonerRef, summonerKey, useAppStore } from '@/store/useAppStore';
+import { colors, radii, spacing, touchTarget } from '@/theme';
+
+/** 태그 없이 입력했을 때 제안하는 KR 서버 기본 태그 */
+const DEFAULT_TAG = 'KR1';
 
 export default function HomeScreen() {
   const [error, setError] = useState<string | null>(null);
+  const [suggestion, setSuggestion] = useState<string | null>(null);
+  const [query, setQuery] = useState('');
+  // 화면에 돌아올 때마다 검색창을 새로 마운트 → 이전 입력 비우고 자동 포커스 (연속 조회용)
+  const [searchKey, setSearchKey] = useState(0);
   const recentSearches = useAppStore((s) => s.recentSearches);
   const favorites = useAppStore((s) => s.favorites);
   const removeRecent = useAppStore((s) => s.removeRecent);
   const toggleFavorite = useAppStore((s) => s.toggleFavorite);
   const isFavorite = useAppStore((s) => s.isFavorite);
 
+  useFocusEffect(
+    useCallback(() => {
+      setSearchKey((k) => k + 1);
+      setQuery('');
+      setError(null);
+      setSuggestion(null);
+    }, []),
+  );
+
   const handleSubmit = (raw: string) => {
     const parsed = parseRiotId(raw);
     if (!parsed) {
-      setError('소환사명#태그 형식으로 입력해 주세요. (예: Hide on bush#KR1)');
+      const name = raw.trim();
+      if (name && !name.includes('#')) {
+        setError('태그(#)가 빠졌어요.');
+        setSuggestion(`${name}#${DEFAULT_TAG}`);
+      } else {
+        setError('소환사명#태그 형식으로 입력해 주세요. (예: 소환사명#KR1)');
+        setSuggestion(null);
+      }
       return;
     }
     setError(null);
+    setSuggestion(null);
     goToSummoner(parsed.gameName, parsed.tagLine);
   };
 
+  // 입력 중에는 최근검색·즐겨찾기를 입력값으로 걸러 바로 고를 수 있게 한다
+  const q = query.trim().toLowerCase();
+  const matches = (item: SummonerRef) => !q || summonerKey(item.gameName, item.tagLine).includes(q);
+  const shownFavorites = favorites.filter(matches);
+  const shownRecents = recentSearches.filter(matches);
   const hasLists = favorites.length > 0 || recentSearches.length > 0;
 
   return (
@@ -39,19 +69,48 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.brand}>
-          <Text variant="display">
-            <Text variant="display" color="primary">LL</Text>og
+          <Text variant="display" accessibilityRole="header">
+            LLog
           </Text>
           <Text variant="caption" color="textMuted" style={{ marginTop: spacing.xs }}>
             한국(KR) 서버 · Riot ID 전적검색
           </Text>
         </View>
 
-        <SearchBar onSubmit={handleSubmit} error={error} />
+        <View>
+          <SearchBar
+            key={searchKey}
+            autoFocus
+            onSubmit={handleSubmit}
+            onChangeText={(v) => {
+              setQuery(v);
+              if (error) {
+                setError(null);
+                setSuggestion(null);
+              }
+            }}
+            error={error}
+          />
+          {suggestion ? (
+            <Pressable
+              onPress={() => handleSubmit(suggestion)}
+              accessibilityRole="button"
+              accessibilityLabel={`${suggestion}로 검색`}
+              style={({ pressed }) => [styles.suggestion, pressed && { backgroundColor: colors.hover }]}
+            >
+              <Text variant="caption" color="textSecondary">
+                <Text variant="caption" color="primary">
+                  {suggestion}
+                </Text>
+                로 검색
+              </Text>
+            </Pressable>
+          ) : null}
+        </View>
 
-        {favorites.length > 0 ? (
+        {shownFavorites.length > 0 ? (
           <Section title="즐겨찾기">
-            {favorites.map((item) => (
+            {shownFavorites.map((item) => (
               <SummonerRow
                 key={summonerKey(item.gameName, item.tagLine)}
                 item={item}
@@ -63,9 +122,9 @@ export default function HomeScreen() {
           </Section>
         ) : null}
 
-        {recentSearches.length > 0 ? (
+        {shownRecents.length > 0 ? (
           <Section title="최근 검색">
-            {recentSearches.map((item) => (
+            {shownRecents.map((item) => (
               <SummonerRow
                 key={summonerKey(item.gameName, item.tagLine)}
                 item={item}
@@ -95,8 +154,13 @@ export default function HomeScreen() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View style={styles.section}>
-      <Text variant="caption" color="textMuted" style={styles.sectionTitle}>
-        {title.toUpperCase()}
+      <Text
+        variant="caption"
+        color="textMuted"
+        accessibilityRole="header"
+        style={styles.sectionTitle}
+      >
+        {title}
       </Text>
       <View>{children}</View>
     </View>
@@ -112,6 +176,13 @@ const styles = StyleSheet.create({
     gap: spacing.xl,
   },
   brand: { marginTop: spacing.sm },
+  suggestion: {
+    alignSelf: 'flex-start',
+    minHeight: touchTarget,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.xs,
+    borderRadius: radii.md,
+  },
   section: { gap: spacing.xs },
   sectionTitle: { marginLeft: spacing.md, letterSpacing: 0.5 },
   emptyWrap: { paddingTop: spacing.huge },

@@ -36,6 +36,9 @@ export function ProfileHeader({
       <Pressable
         onPress={onToggleFavorite}
         hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel={favorite ? '즐겨찾기 해제' : '즐겨찾기 추가'}
+        accessibilityState={{ selected: favorite }}
         style={({ pressed }) => [
           styles.favBtn,
           {

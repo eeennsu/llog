@@ -17,7 +17,8 @@ Riot ID(`gameName#tagLine`)로 소환사 프로필·랭크·숙련도·매치 �
 # 프록시 (server/) — 앱보다 먼저 띄운다
 cd server && npm install
 cp .env.example .env.local        # RIOT_API_KEY 입력 (개발 키는 24시간마다 만료)
-npm run dev                       # vercel dev --listen 3000
+npm run dev:local                 # Vercel 로그인 없이 Node http 로 핸들러 직접 서빙 (server/dev.ts, :3000)
+npm run dev                       # vercel dev --listen 3000 (vercel login + 프로젝트 링크 필요)
 
 # 앱 (루트)
 cp .env.example .env              # EXPO_PUBLIC_API_BASE=http://localhost:3000
@@ -30,6 +31,7 @@ node scripts/generate-brand-assets.js   # 아이콘/스플래시 재생성 (shar
 
 테스트 러너는 없다. 검증은 `typecheck` + 프록시·앱 동시 구동 후 KR 계정 1건을 프로필 → 랭크 → 매치목록 → 매치상세 순으로 조회하고, 에러 케이스(잘못된 Riot ID 404 / 만료 키 403 / rate limit 429)에서 에러 뷰가 뜨는지 확인한다.
 실기기 테스트 시 `EXPO_PUBLIC_API_BASE`를 PC LAN IP로 바꿔야 한다.
+Android 에뮬레이터에서는 `adb reverse tcp:3000 tcp:3000`을 걸면 `.env`의 `localhost:3000` 그대로 프록시에 닿는다.
 
 ## 아키텍처
 
@@ -65,4 +67,4 @@ Data Dragon(`src/api/ddragon.ts`)은 CORS 허용·키 불필요라 **앱에서 �
 
 - 경로 alias: `@/*` → `src/*`, `@/assets/*` → `assets/*`.
 - 사용자 대상 문자열·주석은 한국어.
-- 이 디렉터리는 git 저장소가 아니다.
+- `.omc/`와 `.claude/CLAUDE.md`(oh-my-claudecode 보일러플레이트)는 과거 세션 잔재다. OMC 스킬·에이전트·상태 파일은 더 이상 쓰지 않는다.

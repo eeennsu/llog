@@ -5,6 +5,7 @@
   "description": "Riot API 키를 은닉하는 패스스루 프록시 (Vercel Serverless Functions)",
   "scripts": {
     "dev": "vercel dev --listen 3000",
+    "dev:local": "node --experimental-strip-types --env-file=.env.local dev.ts",
     "deploy": "vercel deploy --prod"
   },
   "devDependencies": {

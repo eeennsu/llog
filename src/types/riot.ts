@@ -74,6 +74,8 @@ export type ParticipantDto = {
   neutralMinionsKilled: number;
   goldEarned: number;
   totalDamageDealtToChampions: number;
+  totalDamageTaken?: number;
+  damageDealtToBuildings?: number;
   visionScore: number;
   win: boolean;
   teamId: number; // 100 | 200
@@ -93,6 +95,11 @@ export type ParticipantDto = {
   quadraKills: number;
   pentaKills: number;
   perks: ParticipantPerks;
+  /** Riot 이 계산해 주는 부가 지표 (일부 큐/구버전 매치에는 없음) */
+  challenges?: {
+    killParticipation?: number; // 0~1
+    soloKills?: number;
+  };
 };
 
 export type TeamObjective = { first: boolean; kills: number };

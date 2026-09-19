@@ -27,7 +27,7 @@ function messageForStatus(status: number, fallback: string): string {
       return '잘못된 요청입니다. 입력값을 확인해 주세요.';
     case 401:
     case 403:
-      return 'API 키가 유효하지 않거나 만료되었습니다. (개발 키는 24시간마다 갱신 필요)';
+      return '전적 서버의 API 키가 만료되어 지금은 조회할 수 없습니다.';
     case 404:
       return '해당 소환사 또는 데이터를 찾을 수 없습니다.';
     case 429:
@@ -40,6 +40,12 @@ function messageForStatus(status: number, fallback: string): string {
     default:
       return fallback || '알 수 없는 오류가 발생했습니다.';
   }
+}
+
+/** 다시 시도로 해결될 수 있는 실패인지 (연결 실패·rate limit·서버 오류) */
+export function isRetryable(error: unknown): boolean {
+  if (!(error instanceof ApiError)) return true;
+  return error.status === 0 || error.status === 429 || error.status >= 500;
 }
 
 export type QueryParams = Record<string, string | number | undefined>;
@@ -68,7 +74,7 @@ export async function riotFetch<T>(
   } catch (e) {
     throw new ApiError(
       0,
-      '서버에 연결할 수 없습니다. 프록시(API_BASE)가 실행 중인지 확인해 주세요.',
+      '전적 서버에 연결할 수 없습니다. 네트워크를 확인하고 다시 시도해 주세요.',
     );
   }
 

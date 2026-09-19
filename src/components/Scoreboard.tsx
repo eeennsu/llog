@@ -1,11 +1,14 @@
 import { Pressable, View, StyleSheet } from 'react-native';
 
+import { BadgeList } from '@/components/BadgeList';
 import { ChampionIcon } from '@/components/ChampionIcon';
 import { ItemSlots } from '@/components/ItemSlots';
 import { SpellRunes } from '@/components/SpellRunes';
 import { Text } from '@/components/ui/Text';
+import { useChampionName } from '@/hooks/useStaticData';
+import { Badge } from '@/lib/badges';
 import { goToSummoner } from '@/lib/nav';
-import { formatKda, positionLabel, totalCs } from '@/lib/lol';
+import { formatKda, outcomeLabel, positionLabel, totalCs } from '@/lib/lol';
 import { ParticipantDto, TeamDto } from '@/types/riot';
 import { colors, outcomeColors, radii, spacing } from '@/theme';
 
@@ -15,14 +18,20 @@ export function TeamScoreboard({
   mePuuid,
   maxDamage,
   sideLabel,
+  badges,
+  remake = false,
 }: {
   team: TeamDto;
   participants: ParticipantDto[];
   mePuuid: string;
   maxDamage: number;
   sideLabel: string;
+  /** puuid → 뱃지 (computeMatchBadges 결과) */
+  badges: Record<string, Badge[]>;
+  /** 다시하기 게임이면 승패색 대신 중립 */
+  remake?: boolean;
 }) {
-  const oc = outcomeColors(team.win);
+  const oc = outcomeColors(team.win, remake);
   const obj = team.objectives;
 
   return (
@@ -31,7 +40,7 @@ export function TeamScoreboard({
         <View style={styles.teamHeaderLeft}>
           <View style={[styles.dot, { backgroundColor: oc.main }]} />
           <Text variant="bodyStrong" style={{ color: oc.main }}>
-            {sideLabel} {team.win ? '승리' : '패배'}
+            {sideLabel} {outcomeLabel(team.win, remake)}
           </Text>
         </View>
         <Text variant="caption" color="textMuted" tabular>
@@ -46,6 +55,7 @@ export function TeamScoreboard({
           p={p}
           me={p.puuid === mePuuid}
           maxDamage={maxDamage}
+          badges={badges[p.puuid] ?? []}
         />
       ))}
     </View>
@@ -56,23 +66,33 @@ function ScoreboardRow({
   p,
   me,
   maxDamage,
+  badges,
 }: {
   p: ParticipantDto;
   me: boolean;
   maxDamage: number;
+  badges: Badge[];
 }) {
+  const championName = useChampionName();
   const cs = totalCs(p);
   const dmgPct = maxDamage > 0 ? p.totalDamageDealtToChampions / maxDamage : 0;
   const name = p.riotIdGameName || p.summonerName || '';
+  // 본인 행은 이미 보고 있는 소환사이므로 이동하지 않는다
+  const canOpen = !me && !!p.riotIdGameName && !!p.riotIdTagline;
 
   return (
     <Pressable
-      onPress={() =>
-        p.riotIdGameName && p.riotIdTagline
-          ? goToSummoner(p.riotIdGameName, p.riotIdTagline)
-          : undefined
-      }
-      style={[styles.row, me && styles.rowMe]}
+      onPress={canOpen ? () => goToSummoner(p.riotIdGameName!, p.riotIdTagline!) : undefined}
+      accessibilityRole={canOpen ? 'button' : undefined}
+      accessibilityLabel={`${name}, ${championName(p.championId, p.championName)}, ${p.kills}킬 ${p.deaths}데스 ${p.assists}어시스트${
+        badges.length ? `, ${badges.map((b) => b.label).join(', ')}` : ''
+      }`}
+      accessibilityHint={canOpen ? '소환사 전적 보기' : undefined}
+      style={({ pressed }) => [
+        styles.row,
+        me && styles.rowMe,
+        pressed && canOpen && { backgroundColor: colors.hover },
+      ]}
     >
       <ChampionIcon championName={p.championName} size={36} level={p.champLevel} />
       <SpellRunes p={p} size={15} />
@@ -86,12 +106,13 @@ function ScoreboardRow({
             {p.kills}/{p.deaths}/{p.assists} · {formatKda(p.kills, p.deaths, p.assists)}
           </Text>
           {positionLabel(p.teamPosition) ? (
-            <Text variant="micro" color="textDisabled">
+            <Text variant="micro" color="textMuted">
               {positionLabel(p.teamPosition)}
             </Text>
           ) : null}
         </View>
         <ItemSlots p={p} size={18} />
+        <BadgeList badges={badges} />
       </View>
 
       <View style={styles.rowRight}>
@@ -138,7 +159,7 @@ const styles = StyleSheet.create({
   },
   rowCenter: { flex: 1, gap: 3 },
   metaLine: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  rowRight: { width: 76, alignItems: 'flex-end', gap: 3 },
+  rowRight: { minWidth: 76, alignItems: 'flex-end', gap: 3 },
   dmgTrack: {
     width: '100%',
     height: 3,
