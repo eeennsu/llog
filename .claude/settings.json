@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Force \"C:\\\\Users\\\\xxx99\\\\Documents\\\\GitHub\\\\portfolio\\\\lol-history-scaffold\" -File | Select-Object Name; Write-Output \"---- has babel/metro? ----\"; @\\(\"babel.config.js\",\"metro.config.js\",\"tailwind.config.js\",\"nativewind-env.d.ts\"\\) | ForEach-Object { if \\(Test-Path \"C:\\\\Users\\\\xxx99\\\\Documents\\\\GitHub\\\\portfolio\\\\lol-history-scaffold\\\\$_\"\\) { Write-Output \"$_ EXISTS\" } else { Write-Output \"$_ none\" } })",
+      "PowerShell(npm install --prefix \"C:\\\\Users\\\\xxx99\\\\Documents\\\\GitHub\\\\portfolio\\\\lol-history\" 2>&1)",
+      "PowerShell(npx expo install @react-native-async-storage/async-storage --prefix \"C:\\\\Users\\\\xxx99\\\\Documents\\\\GitHub\\\\portfolio\\\\lol-history\" 2>&1)",
+      "PowerShell(npx expo install @react-native-async-storage/async-storage 2>&1)",
+      "PowerShell(npx expo install @expo/vector-icons 2>&1)",
+      "PowerShell(npx tsc --noEmit 2>&1)",
+      "PowerShell($out = npx tsc --noEmit 2>&1; if \\($LASTEXITCODE -eq 0\\) { Write-Output \"TYPECHECK PASS\" } else { Write-Output \"TYPECHECK FAIL \\($LASTEXITCODE\\)\"; $out | Select-Object -First 80 })",
+      "PowerShell(npx expo export --platform android --output-dir .expo-export-check 2>&1)",
+      "Bash([ -d \"node_modules/$p\" ])",
+      "Bash([ -d \"server/node_modules/$p\" ])",
+      "Bash(node -e \"try{const s=require\\('sharp'\\);console.log\\('sharp OK', s.versions?.sharp||''\\);}catch\\(e\\){console.log\\('no top-level sharp:', e.message.split\\('\\\\n'\\)[0]\\);}\")"
+    ]
+  }
+}

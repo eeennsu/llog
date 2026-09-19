@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c 'import sys,json *)",
+      "Bash(tail -n 50 13d0e823-513b-4522-bc35-ddb2c767dbc8.jsonl)",
+      "Bash(node -e ' *)",
+      "Bash(cd \"C:/Users/xxx99/Documents/GitHub/portfolio\" && ls -d */ 2>/dev/null | grep -iE \"lol|LLog\"; echo \"---\"; ls \"C:/Users/xxx99/Documents/GitHub/portfolio/LLog\" | head -20)",
+      "Read(//c/Users/xxx99/Documents/GitHub/portfolio/**)"
+    ]
+  }
+}
