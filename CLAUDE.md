@@ -67,4 +67,3 @@ Data Dragon(`src/api/ddragon.ts`)은 CORS 허용·키 불필요라 **앱에서 �
 
 - 경로 alias: `@/*` → `src/*`, `@/assets/*` → `assets/*`.
 - 사용자 대상 문자열·주석은 한국어.
-- `.omc/`와 `.claude/CLAUDE.md`(oh-my-claudecode 보일러플레이트)는 과거 세션 잔재다. OMC 스킬·에이전트·상태 파일은 더 이상 쓰지 않는다.
